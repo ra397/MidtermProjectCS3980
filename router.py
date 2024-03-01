@@ -1,6 +1,8 @@
 from fastapi import APIRouter, status
 from fastapi.responses import FileResponse, JSONResponse
+from fastapi.encoders import jsonable_encoder
 from model import RunEntry, RunRequest
+from typing import List
 
 router = APIRouter()
 
@@ -26,3 +28,8 @@ async def add_run(run: RunRequest) -> dict:
 
     # send JSON response to validate the POST was successful
     return JSONResponse(json_compatible_run_data, status_code=status.HTTP_201_CREATED)
+
+@router.get('/runs/', response_model=List[RunEntry])
+async def get_runs():
+    json_compatible_run_data = jsonable_encoder(run_entries)
+    return JSONResponse(content=json_compatible_run_data)
