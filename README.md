@@ -8,3 +8,8 @@ To install FastAPI
 pip install fastapi
 pip install "uvicorn[standard]"
 ```
+
+
+```
+pip install fastapi-cors
+```

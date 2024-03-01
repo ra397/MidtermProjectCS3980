@@ -1,10 +1,10 @@
 from fastapi import FastAPI
-from route import router
+from fastapi.staticfiles import StaticFiles
+from router import router
 
 app = FastAPI()
 
-@app.get('/')
-async def welcome() -> dict:
-    return {'message': 'Hello World'}
+# Mount the 'static' directory to serve static files
+app.mount('/static', StaticFiles(directory='static'), name='static')
 
-app.include_router(router=router)
+app.include_router(router)
