@@ -13,9 +13,6 @@ async def welcome():
 
 @router.post('/runs/')
 async def add_run(run: RunRequest) -> dict:
-    print(run)
-
-
     # update the ID 
     global current_id
     current_id += 1

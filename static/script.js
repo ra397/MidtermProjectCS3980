@@ -24,6 +24,7 @@ addRunButton.addEventListener('click', function(event) {
         console.log(runTitle + ", " + runMileage + ", " + runTimeElapsed);
         console.log(typeof runTimeElapsed);
 
+        // this is the data to send
         const requestData = {
             title: runTitle,
             num_miles: runMileage,
