@@ -2,11 +2,14 @@ const api = 'http://localhost:8000';
 
 var addRunButton = document.getElementById('addRun');
 
+// a regular expression that validates the time input
 function isValidTimeFormat(time) {
     var regex = /^([0-9]{2}):([0-9]{2}):([0-9]{2})$/;
     return regex.test(time);
 }
 
+// on button click, submit the run to FastAPI
+// get all runs from FastAPI and display them
 addRunButton.addEventListener('click', function(event) {
     event.preventDefault();
     console.log('USER WANTS TO ADD A RUN');
@@ -26,7 +29,7 @@ addRunButton.addEventListener('click', function(event) {
     }
 });
 
-
+// submits a run to FastAPI
 function submitRun(runTitle, runMileage, runTimeElapsed) {
     // this is the data to send
     const requestData = {
@@ -82,5 +85,3 @@ function displayRuns(runs) {
     row.insertCell().textContent = run.num_miles;
     row.insertCell().textContent = run.time_elapsed;
 }
-
-
