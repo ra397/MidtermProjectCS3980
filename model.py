@@ -4,9 +4,9 @@ class RunEntry(BaseModel):
     id: int
     title: str
     num_miles: float
-    time_elapsed: float
+    time_elapsed: str
 
 class RunRequest(BaseModel):
     title: str
     num_miles: float
-    time_elapsed: float
+    time_elapsed: str

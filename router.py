@@ -11,8 +11,11 @@ current_id: int = 0
 async def welcome():
     return FileResponse('static/index.html')
 
-@router.post('/runs')
-def add_run(run: RunRequest) -> dict:
+@router.post('/runs/')
+async def add_run(run: RunRequest) -> dict:
+    print(run)
+
+
     # update the ID 
     global current_id
     current_id += 1
@@ -21,4 +24,8 @@ def add_run(run: RunRequest) -> dict:
     new_run = RunEntry(id=current_id, title=run.title, num_miles=run.num_miles, time_elapsed=run.time_elapsed)
     run_entries.append(new_run)
     json_compatible_run_data = new_run.model_dump()
+
+    print(len(run_entries))
+
+    # send JSON response to validate the POST was successful
     return JSONResponse(json_compatible_run_data, status_code=status.HTTP_201_CREATED)

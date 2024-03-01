@@ -1,22 +1,49 @@
 const api = 'http://localhost:8000';
-let addRunButton = document.getElementById('addRun');
 
-// JavaScript code for validation
-document.getElementById('myForm').addEventListener('submit', function(event) {
-    var timeInput = document.getElementById('timeElapsedInput').value;
-    if (!isValidTimeFormat(timeInput)) {
-        alert('Please enter time in the format HH:MM:SS');
-        event.preventDefault(); // Prevent form submission
-    }
-});
+var addRunButton = document.getElementById('addRun');
 
 function isValidTimeFormat(time) {
     var regex = /^([0-9]{2}):([0-9]{2}):([0-9]{2})$/;
     return regex.test(time);
 }
 
+addRunButton.addEventListener('click', function(event) {
+    event.preventDefault();
+    console.log('USER WANTS TO ADD A RUN');
 
-addRunButton.addEventListener('click', addRun);
-function addRun() {
-    console.log("User wants to add a run");
-}
+    // grab the data to send to FastAPI from HTML elements
+    const runTitle = document.getElementById('textInput').value;
+    const runMileage = document.getElementById('milesInput').value;
+    const runTimeElapsed = document.getElementById('timeElapsedInput').value;
+
+    // validate that the elapsed time input is in the correct format
+    if (!isValidTimeFormat(runTimeElapsed)) {
+        alert("Please enter time in the form HH:MM:SS");
+    } else {
+        // if valid, send to FastAPI
+        console.log(runTitle + ", " + runMileage + ", " + runTimeElapsed);
+        console.log(typeof runTimeElapsed);
+
+        const requestData = {
+            title: runTitle,
+            num_miles: runMileage,
+            time_elapsed: runTimeElapsed
+        }
+
+        // Make a POST request using fetch
+        fetch('/runs/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+});
