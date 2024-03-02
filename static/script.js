@@ -75,21 +75,34 @@ function getAndDisplayRuns() {
     });
 }
 
-// displays all runs
+// helper function for getAndDisplayRuns() that displays all runs
 function displayRuns(runs) {
     const tableBody = document.querySelector('#runTable tbody');
     for (let i = 0; i < runs.length; i ++) {
         const run = runs[i];
+
         const row = tableBody.insertRow();
-        row.insertCell().textContent = run.title;
-        row.insertCell().textContent = run.num_miles;
-        row.insertCell().textContent = run.time_elapsed;
+        const titleCell = row.insertCell(0);
+        const milesCell = row.insertCell(1);
+        const timeCell = row.insertCell(2);
+        const deleteCell = row.insertCell(3);
+
+        titleCell.textContent = run.title;
+        milesCell.textContent = run.num_miles;
+        timeCell.textContent = run.time_elapsed;
+
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.onclick = () => deleteRun(run.id);
+        deleteCell.appendChild(deleteButton);
     }
+}
+
+async function deleteRun(runId) {
+    console.log('USER WANTS TO DELETE RUN ' + runId);
 }
 
 function isValidTimeFormat(time) {
     var regex = /^([0-9]{2}):([0-9]{2}):([0-9]{2})$/;
     return regex.test(time);
 }
-
-
