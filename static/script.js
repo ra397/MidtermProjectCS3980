@@ -2,14 +2,10 @@ const api = 'http://localhost:8000';
 
 var addRunButton = document.getElementById('addRun');
 
-// a regular expression that validates the time input
-function isValidTimeFormat(time) {
-    var regex = /^([0-9]{2}):([0-9]{2}):([0-9]{2})$/;
-    return regex.test(time);
+window.onload = function() {
+    getAndDisplayRuns();
 }
 
-// on button click, submit the run to FastAPI
-// get all runs from FastAPI and display them
 addRunButton.addEventListener('click', function(event) {
     event.preventDefault();
     console.log('USER WANTS TO ADD A RUN');
@@ -25,11 +21,12 @@ addRunButton.addEventListener('click', function(event) {
     } else {
         // if valid, send to FastAPI
         submitRun(runTitle, runMileage, runTimeElapsed);
-        getAndDisplayRuns();
+
+        // go back to running log (index.html)
+        window.location.href = '/static/index.html';
     }
 });
 
-// submits a run to FastAPI
 function submitRun(runTitle, runMileage, runTimeElapsed) {
     // this is the data to send
     const requestData = {
@@ -69,19 +66,30 @@ function getAndDisplayRuns() {
         // Display or process the retrieved runs data
         console.log('Runs:', data);
         // Assuming you have a function to display runs, you can call it here
-        displayRuns(data);
+        if (data.length > 0) {
+            displayRuns(data);
+        }
     })
     .catch((error) => {
         console.error('Error:', error);
     });
 }
 
-// adds most recently submitted run to display
+// displays all runs
 function displayRuns(runs) {
     const tableBody = document.querySelector('#runTable tbody');
-    const run = runs[runs.length - 1];
-    const row = tableBody.insertRow();
-    row.insertCell().textContent = run.title;
-    row.insertCell().textContent = run.num_miles;
-    row.insertCell().textContent = run.time_elapsed;
+    for (let i = 0; i < runs.length; i ++) {
+        const run = runs[i];
+        const row = tableBody.insertRow();
+        row.insertCell().textContent = run.title;
+        row.insertCell().textContent = run.num_miles;
+        row.insertCell().textContent = run.time_elapsed;
+    }
 }
+
+function isValidTimeFormat(time) {
+    var regex = /^([0-9]{2}):([0-9]{2}):([0-9]{2})$/;
+    return regex.test(time);
+}
+
+
