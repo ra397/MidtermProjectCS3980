@@ -43,3 +43,14 @@ async def delete_run(run_id: int) -> dict:
             run_entries.pop(i)
             return {'message': f'The run with ID={run_id} has been deleted.'}
     return {"message": f"The run with ID={id} is not found."} 
+
+@router.put('/runs/{run_id}')
+async def edit_run(run: RunEntry) -> dict:
+    for x in run_entries:
+        if x.id == run.id:
+            x.title = run.title
+            x.num_miles = run.num_miles
+            x.time_elapsed = run.time_elapsed
+            return {'message': f'The run with ID={run.id} has been edited.'}
+    return {"message": f"The run is not found."} 
+

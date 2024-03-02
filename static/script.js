@@ -85,21 +85,89 @@ function displayRuns(runs) {
         const titleCell = row.insertCell(0);
         const milesCell = row.insertCell(1);
         const timeCell = row.insertCell(2);
-        const deleteCell = row.insertCell(3);
+        const actionCell = row.insertCell(3);
 
-        titleCell.textContent = run.title;
-        milesCell.textContent = run.num_miles;
-        timeCell.textContent = run.time_elapsed;
+        const titleInput = document.createElement('input');
+        titleInput.type = 'text';
+        titleInput.value = run.title;
+        titleInput.disabled = true; // disable input until 'EDIT' button is pressed
+        titleCell.appendChild(titleInput);
+
+        const milesInput = document.createElement('input');
+        milesInput.type = 'number';
+        milesInput.step = 0.1;
+        milesInput.min = 0.0;
+        milesInput.value = run.num_miles;
+        milesInput.disabled = true; // disable input until 'EDIT' button is pressed
+        milesCell.appendChild(milesInput);
+
+        const timeInput = document.createElement('input');
+        timeInput.type = 'text';
+        timeInput.value = run.time_elapsed;
+        timeInput.disabled = true; // disable input until 'EDIT' button is pressed
+        timeCell.appendChild(timeInput);
+
+        const editButton = document.createElement('button');
+        editButton.textContent = 'Edit';
+        editButton.classList.add('edit-button');
+        editButton.onclick = () => enableEdit(row, titleInput, milesInput, timeInput, run);
+        actionCell.appendChild(editButton);
 
         const deleteButton = document.createElement('button');
         deleteButton.textContent = 'Delete';
-        deleteButton.onclick = () => deleteRun(run.id);
-        deleteCell.appendChild(deleteButton);
+        deleteButton.onclick = () => deleteRun(run);
+        actionCell.appendChild(deleteButton);
     }
 }
 
-async function deleteRun(runId) {
-    console.log('USER WANTS TO DELETE RUN ' + runId);
+async function deleteRun(run) {
+    const runId = run.id;
+    const runTitle = run.title;
+    const confirmDelete = confirm(`Are you sure you want to delete "${runTitle}"?`);
+
+    if (confirmDelete) {
+        const response = await fetch(`/runs/${runId}`, {
+            method: 'DELETE'
+        });
+        await response.json();
+        location.reload();
+    }
+}
+
+async function enableEdit(row, titleInput, milesInput, timeInput, run_data) {
+    titleInput.disabled = false;
+    milesInput.disabled = false;
+    timeInput.disabled = false;
+
+    const editButton = row.querySelector('.edit-button');
+    editButton.textContent = 'Save';
+    editButton.onclick = () => {
+        if (!isValidTimeFormat(timeInput.value)) {
+            alert("Please enter time in the form HH:MM:SS");
+        } else {
+
+            editButton.textContent = 'Edit';
+
+            titleInput.disabled = true;
+            milesInput.disabled = true;
+            timeInput.disabled = true;
+
+            editRun(run_data);            
+
+            location.reload();
+        }
+    }
+}
+
+async function editRun(run) {
+    const requestData = {
+        id: run.id,
+        title: run.title,
+        num_miles: run.num_miles,
+        time_elapsed: run.time_elapsed
+    }
+
+    // TEST THAT WE ARE SENDING THE CORRECT DATA TO THE API HERE
 }
 
 function isValidTimeFormat(time) {
