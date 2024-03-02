@@ -30,6 +30,16 @@ async def add_run(run: RunRequest) -> dict:
     return JSONResponse(json_compatible_run_data, status_code=status.HTTP_201_CREATED)
 
 @router.get('/runs/', response_model=List[RunEntry])
-async def get_runs():
+async def get_runs() -> dict:
     json_compatible_run_data = jsonable_encoder(run_entries)
     return JSONResponse(content=json_compatible_run_data)
+
+@router.delete('/runs/{run_id}')
+async def delete_run(run_id: int) -> dict:
+    # find run by id
+    for i in range(len(run_entries)):
+        current_run = run_entries[i]
+        if current_run.id == run_id:
+            run_entries.pop(i)
+            return {'message': f'The run with ID={run_id} has been deleted.'}
+    return {"message": f"The run with ID={id} is not found."} 
