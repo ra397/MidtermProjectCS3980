@@ -13,3 +13,5 @@ pip install "uvicorn[standard]"
 ```
 pip install fastapi-cors
 ```
+
+![](gif/example.gif)
