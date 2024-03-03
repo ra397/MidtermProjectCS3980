@@ -2,6 +2,10 @@ const api = 'http://localhost:8000';
 
 var addRunButton = document.getElementById('addRun');
 
+window.onload = function() {
+    getAndDisplayRuns();
+}
+
 if (addRunButton != null) {
     addRunButton.addEventListener('click', function(event) {
         event.preventDefault();
@@ -133,12 +137,52 @@ async function deleteRun(run) {
 }
 
 async function enableEdit(row, titleInput, milesInput, timeInput, run_data) {
-    console.log('USER WANTS TO EDIT');
+    titleInput.disabled = false;
+    milesInput.disabled = false;
+    timeInput.disabled = false;
+
+    const editButton = row.querySelector('.edit-button');
+    editButton.textContent = 'Save';
+    editButton.onclick = () => {
+        if (!isValidTimeFormat(timeInput.value)) {
+            alert("Please enter time in the form HH:MM:SS");
+        } else {
+            editButton.textContent = 'Edit';
+
+            titleInput.disabled = true;
+            milesInput.disabled = true;
+            timeInput.disabled = true;
+
+            // prepare data to send
+            const runEditRequest = {
+                id: run_data.id,
+                title: titleInput.value,
+                num_miles: milesInput.value,
+                time_elapsed: timeInput.value
+            }
+
+            editRun(runEditRequest); 
+
+            location.reload();
+        }
+    }
 }
 
 async function editRun(run) {
-    
-
+    fetch(`/runs/${run.id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(run)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Success:', data);
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
 }
 
 function isValidTimeFormat(time) {
