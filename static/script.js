@@ -2,30 +2,28 @@ const api = 'http://localhost:8000';
 
 var addRunButton = document.getElementById('addRun');
 
-window.onload = function() {
-    getAndDisplayRuns();
+if (addRunButton != null) {
+    addRunButton.addEventListener('click', function(event) {
+        event.preventDefault();
+        console.log('USER WANTS TO ADD A RUN');
+
+        // grab the data to send to FastAPI from HTML elements
+        const runTitle = document.getElementById('textInput').value;
+        const runMileage = document.getElementById('milesInput').value;
+        const runTimeElapsed = document.getElementById('timeElapsedInput').value;
+
+        // validate that the elapsed time input is in the correct format
+        if (!isValidTimeFormat(runTimeElapsed)) {
+            alert("Please enter time in the form HH:MM:SS");
+        } else {
+            // if valid, send to FastAPI
+            submitRun(runTitle, runMileage, runTimeElapsed);
+
+            // go back to running log (index.html)
+            window.location.href = '/static/index.html';
+        }
+    });
 }
-
-addRunButton.addEventListener('click', function(event) {
-    event.preventDefault();
-    console.log('USER WANTS TO ADD A RUN');
-
-    // grab the data to send to FastAPI from HTML elements
-    const runTitle = document.getElementById('textInput').value;
-    const runMileage = document.getElementById('milesInput').value;
-    const runTimeElapsed = document.getElementById('timeElapsedInput').value;
-
-    // validate that the elapsed time input is in the correct format
-    if (!isValidTimeFormat(runTimeElapsed)) {
-        alert("Please enter time in the form HH:MM:SS");
-    } else {
-        // if valid, send to FastAPI
-        submitRun(runTitle, runMileage, runTimeElapsed);
-
-        // go back to running log (index.html)
-        window.location.href = '/static/index.html';
-    }
-});
 
 function submitRun(runTitle, runMileage, runTimeElapsed) {
     // this is the data to send
@@ -135,39 +133,12 @@ async function deleteRun(run) {
 }
 
 async function enableEdit(row, titleInput, milesInput, timeInput, run_data) {
-    titleInput.disabled = false;
-    milesInput.disabled = false;
-    timeInput.disabled = false;
-
-    const editButton = row.querySelector('.edit-button');
-    editButton.textContent = 'Save';
-    editButton.onclick = () => {
-        if (!isValidTimeFormat(timeInput.value)) {
-            alert("Please enter time in the form HH:MM:SS");
-        } else {
-
-            editButton.textContent = 'Edit';
-
-            titleInput.disabled = true;
-            milesInput.disabled = true;
-            timeInput.disabled = true;
-
-            editRun(run_data);            
-
-            location.reload();
-        }
-    }
+    console.log('USER WANTS TO EDIT');
 }
 
 async function editRun(run) {
-    const requestData = {
-        id: run.id,
-        title: run.title,
-        num_miles: run.num_miles,
-        time_elapsed: run.time_elapsed
-    }
+    
 
-    // TEST THAT WE ARE SENDING THE CORRECT DATA TO THE API HERE
 }
 
 function isValidTimeFormat(time) {
